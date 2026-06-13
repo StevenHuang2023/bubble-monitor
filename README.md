@@ -1,79 +1,332 @@
 # 泡沫破灭监控看板 · 火柴 × 炸药
 
-把"外部冲击(火柴) vs 内部结构(炸药量)"框架做成一个看板：量化指标云端自动取数、按阈值给出建议状态，定性指标手动判断，手动可覆盖自动。真正的红灯是**两者同时高**（光点滑进右上象限）。
+> **核心命题**：泡沫不是在最贵的时候破，而是在边际买家消失的时候破。估值只决定摔下来多疼，流动性才决定何时摔。
 
-## 文件
+一套监控 AI 资产泡沫结构性风险的看板。把"外部冲击（火柴）× 内部结构（炸药量）"框架量化：量化指标由 GitHub Actions 在云端全自动取数并按阈值给出建议状态，定性指标手动评估，手动可覆盖自动。**真正的红灯只有两者同时高**——光点滑进象限右上危险区。
 
-| 文件 | 作用 |
-|---|---|
-| `index.html` | 看板本体（纯静态，读 `data.json`，无任何密钥） |
-| `fetch.py` | 取数脚本（标准库零依赖）：FRED+Yahoo+HKMA+Tushare → 算状态 → 写 `data.json` |
-| `data.json` | 取数结果（公开安全，由 Actions 生成/覆盖） |
-| `history.json` | 每日自动状态快照（Actions 维护，前端画"增还是减"趋势与象限轨迹） |
-| `data.sample.json` / `history.sample.json` | 示例数据，本地预览：`cp data.sample.json data.json; cp history.sample.json history.json`（看完记得删 history.json，别让假历史被合并） |
-| `serve.py` | 可选的本地服务器（含 `/refresh` 实时重拉），`python3 serve.py` |
-| `.github/workflows/refresh.yml` | 定时任务：云端跑 `fetch.py` 并提交 `data.json` |
-| `.env` | 本地 token（已被 `.gitignore` 排除，**绝不提交**） |
+**看板地址（GitHub Pages）：[https://stevenhuang2023.github.io/bubble-monitor/](https://stevenhuang2023.github.io/bubble-monitor/)**
 
-## ⚠️ 安全模型（关键）
+---
 
-**静态网页无法隐藏浏览器要用的密钥**——所以 token 永远不进网页、不进 `data.json`、不进仓库：
+## 框架说明：为什么要区分火柴和炸药
 
-- 本地：token 放在 `.env`（`.gitignore` 已排除）。
-- 线上：token 作为 GitHub **仓库 Secret**（加密），只有 Actions 在云端取数时用，产出的 `data.json` 只含派生的公开数据。
+### 核心洞察
 
-> 你的 token 若曾在聊天/邮件等处明文出现过，建议到 https://tushare.pro/user/token **重新生成一次**作废旧的。
+大多数泡沫分析只盯估值，因此总是太早喊顶、反复踏空。这套框架的起点是一个更精确的问题：
 
-## 网络说明（为什么必须云端取数）
+- **炸药量**（内部结构）：市场内部蓄积了多少势能？估值有多高、增速在加速还是减速、谁在用什么钱接盘、叙事有没有脱离理性？
+- **火柴**（外部冲击）：外部触发链条有没有动真格？缩表幅度、通胀是否卡死降息、流动性是否被抽到临界点？
 
-FRED / Yahoo / HKMA 等境外源在中国大陆网络下会被重置（连接 reset）。**GitHub Actions 跑在境外云端，能正常访问这些源**——所以"云端定时取数 + 网页只读 data.json"不只是方便，对墙内用户是必须的：你本机直接 `python3 fetch.py` 通常拉不到境外数据（除非有代理）。Tushare 是境内源，本机可达。
+两者缺一不可：**炸药量高但没火柴** → 昂贵但可以维持，等火柴；**火柴点燃但炸药不足** → 虚惊，浅回调；**两者同时高** → 完整红灯，逐步降暴露。
 
-> 注意：GitHub Pages（`*.github.io`）在大陆有时不稳定/被墙，发布后若打不开属此原因，可考虑自定义域名 / Cloudflare / 国内静态托管。
+### 这是记分牌，不是择时器
 
-## 发布到 GitHub（Pages + Actions）
+精确时点在事前不可预测。这套框架的价值在于：
 
-```bash
-cd /Users/huangyi/stock/bubbles
-git init && git add . && git commit -m "init bubble monitor"
-git branch -M main
-git remote add origin https://github.com/<你>/<仓库>.git
-git push -u origin main
+1. 判断**炸药量在增还是减**——结构变脆时逐步降低暴露
+2. 避免因"太贵"过早离场踏空（D1 估值维度权重刻意压低）
+3. 避免在叙事最狂热时低估风险（D4 叙事相变自动上调灵敏度）
+
+---
+
+## 炸药量（内部结构）· 四个维度
+
+炸药量 = D1 + D2 + D3 的加权均值，再乘以 D4 叙事倍数（×1.0 / ×1.2 / ×1.4）。
+
+### D1 · 估值的绝对高度（海拔表）
+
+| 指标 | 来源 | 作用 |
+|---|---|---|
+| Shiller PE（CAPE） | multpl.com | 周期调整市盈率，衡量股市整体贵不贵 |
+| 市值/GDP（巴菲特指标） | FRED NCBEILQ027S / GDP | 股市整体相对经济的高度 |
+
+**逻辑**：海拔表告诉你摔下来多疼，但出了名地不能择时——高估值可以在高位维持多年。只做背景参照，权重压低（×0.5），绝不单独触发操作。
+
+### D2 · 增速的二阶导（最重要的早期信号）
+
+| 指标 | 来源 | 阈值 |
+|---|---|---|
+| NVDA 营收 QoQ 增速 | SEC EDGAR XBRL（官方，免 key） | 单季回落 → 观察；连续两季回落 → 警报 |
+| 四巨头 capex QoQ 增速 | SEC EDGAR XBRL（MSFT/GOOGL/AMZN/META） | 同上 |
+
+**逻辑**：不看增速本身的绝对高低，看**增速在加速还是减速**。市场对 AI 资产的定价锚定的是加速度，而加速度转负早于价格见顶。这是整套框架里最有价值的领先信号，权重最高（×1.4–1.5）。
+
+> 技术说明：10-K 年报不单独报 Q4，用"全年 − Q1 − Q2 − Q3"自动推导。重述财报按最新申报日期去重。
+
+### D3 · 谁在接盘、用什么钱（烈度维度）
+
+| 指标 | 来源 | 阈值 |
+|---|---|---|
+| A 股两融余额 | Tushare margin 接口 | >3 万亿 → 观察；持续新高 → 警报 |
+| 美股 Margin Debt | 手动（FINRA 月度报告） | 手动评估 |
+| 散户期权杠杆 | 手动 | 手动评估 |
+| AI 债务融资占比 | 手动 | 手动评估 |
+
+**逻辑**：自有资金接盘和借来的钱接盘，破灭烈度完全不同。借钱买的资产遇到下跌会触发保证金追缴，形成强制清算的连锁反应。两融余额持续创新高是最直观的烈度信号。
+
+### D4 · 叙事的相变（定性温度计）
+
+手动评估，不参与数值打分，而是作为**乘数**影响炸药量分数的灵敏度：
+
+| 叙事阶段 | 描述 | 炸药量乘数 |
+|---|---|---|
+| 理性讨论 | AI 有价值，但泡沫争论存在 | ×1.0（不调整） |
+| 叙事扩张 | "AI 是新范式"，质疑声音边缘化 | ×1.2（调严） |
+| 宗教化信仰 | "AI 债务融资合理""任何质疑都是不懂" | ×1.4（大幅调严） |
+
+**逻辑**：数据滞后，叙事同步甚至领先。当"信仰取代论证"，同样的量化读数代表更高的真实风险——因此触发叙事相变后，所有量化阈值整体调严。
+
+---
+
+## 火柴（外部冲击）· 三环链条
+
+火柴分数 = M1 + M3 的加权均值，再乘以 M2 通胀倍数（×0.85 / ×1.0 / ×1.2）。
+
+三环有时序性：**M1 是总开关，M2 决定烈度，M3 是真正的引爆器**。
+
+### M1 · 政策总开关（第一环）
+
+| 指标 | 类型 | 触发条件 |
+|---|---|---|
+| FOMC 声明措辞 | 手动 | 出现"主动卖债"（outright sales）措辞 |
+| WALCL 资产负债表 | 自动（FRED） | 13 周实际收缩幅度 |
+| Warsh 缩表表态 | 手动 | 宣布具体时间表和规模 |
+
+**逻辑**：M1 未动，M2/M3 的担忧都是噪音。这是判断链的起点——先确认缩表是否动真格，再往后看。
+
+### M2 · 通胀确认（第二环）
+
+| 指标 | 来源 | 阈值 |
+|---|---|---|
+| 核心 PCE | FRED PCE | >3% 且回升 → 观察；卡在 3%+ → 警报 |
+| WTI 原油 | Yahoo Finance | 3 月涨幅 >15% → 输入性通胀压力 |
+| 失业率 | FRED UNRATE | 近 3 月均值较低点 +0.4pp → 劳动力松动 |
+
+**逻辑**：通胀卡在目标上方，Fed 无法降息，缩表变成纯紧缩而不是正常化。M2 组的状态直接缩放火柴分数的倍数，不单独计入火柴分。
+
+### M3 · 流动性抽过头（第三环，唯一的快变量）
+
+| 指标 | 来源 | 阈值 |
+|---|---|---|
+| **SOFR − IORB 利差** | FRED SOFR / IORB | ≥5bp → 警报（回购市场紧张的实时信号） |
+| ON RRP 余额 | FRED RRPONTSYD | <1000 亿 → 观察；<250 亿 → 警报 |
+| 银行准备金 | FRED WRBWFRBL | 趋近 Fed 定义的"仅够用"水平 |
+| MMF 总资产 | FRED WRMFSL | 快速增长 = 资金从风险资产撤离 |
+| HY 信用利差 | FRED BAMLH0A0HYM2 | >500bp → 信用市场开始定价危机 |
+
+**逻辑**：M3 是整条链条里变化最快的环节。**SOFR 冒出 IORB 上沿**是流动性被抽走最直接的实时信号，也是集中看触发器 5 个要点之一。
+
+---
+
+## 市场反应 · 落到两个市场
+
+| 指标 | 市场 | 来源 | 逻辑 |
+|---|---|---|---|
+| 南向资金 5 日净流入 | 港股 | Tushare moneyflow_hsgt | 南向持续净流出 = 港股资金面警报 |
+| 香港银行体系总结余 | 港股 | HKMA | 结余枯竭 = 港股流动性边界 |
+| HIBOR | 港股 | HKMA | 利率快速上行 = 港元体系承压 |
+| A 股两融余额 | A 股 | Tushare margin | 借来的钱接盘，破灭时连锁清算 |
+| IPO 首日表现 | A 股 | 手动 | 新股赚钱效应 = 资金还在博弈还是在撤退 |
+| AI 龙头价格动能 | 美股 | Yahoo Finance | NVDA/MSFT/GOOGL/AMZN/META 3 月涨跌 |
+| 纳指 / VIX | 美股 | Yahoo Finance | 背景参照 |
+
+---
+
+## 五个集中看触发器
+
+日常无需逐项看板，只盯以下 5 个点——**任一动了再全面复盘**：
+
+| # | 触发点 | 说明 |
+|---|---|---|
+| 1 | **FOMC 出现"主动卖债"措辞** | M1 总开关打开 |
+| 2 | **WALCL 资产负债表实际收缩** | 确认缩表不是口头说说 |
+| 3 | **Warsh 宣布时间表/规模** | 市场开始定价具体路径 |
+| 4 | **SOFR 冒出 IORB 上沿** | 流动性正在被抽走的实时信号 |
+| 5 | **叙事相变** | 信仰取代了论证 |
+
+---
+
+## 打分规则
+
+```
+炸药量分数 = min(100, round( wscore(D1,D2,D3) × 叙事倍数 ))
+火柴分数   = min(100, round( wscore(M1,M3) × 通胀倍数 ))
+
+叙事倍数：正常=1.0 / 扩张=1.2 / 宗教化=1.4
+通胀倍数：温和=0.85 / 中性=1.0 / 纯收紧=1.2
+
+象限：炸药量(横轴) × 火柴(纵轴)，55 为警戒线
+真正红灯 = 两轴均 > 55（光点进入右上危险区）
 ```
 
-然后在 GitHub 仓库里：
+---
+
+## 指标一览
+
+### 自动指标（GitHub Actions 定时取数）
+
+| 指标 | 来源 | 更新频率 |
+|---|---|---|
+| SOFR − IORB 利差 | FRED SOFR + IORB | 工作日 |
+| ON RRP 隔夜逆回购 | FRED RRPONTSYD | 工作日 |
+| 银行准备金 | FRED WRBWFRBL | 每周 |
+| 资产负债表 WALCL | FRED WALCL | 每周 |
+| 核心 PCE | FRED PCEPILFE | 月度 |
+| WTI 原油 | Yahoo Finance CL=F | 工作日 |
+| 失业率 | FRED UNRATE | 月度 |
+| MMF 总资产 | FRED WRMFSL | 每周 |
+| HY 信用利差 | FRED BAMLH0A0HYM2 | 工作日 |
+| CAPE（Shiller PE） | multpl.com 爬取 | 月度 |
+| 巴菲特指标 | FRED NCBEILQ027S / GDP | 季度 |
+| NVDA 营收 QoQ | SEC EDGAR XBRL | 季度财报 |
+| 四巨头 capex QoQ | SEC EDGAR XBRL | 季度财报 |
+| 香港总结余 + HIBOR | HKMA 官方 API | 工作日 |
+| AI 龙头价格动能 | Yahoo Finance | 工作日 |
+| 纳指 / VIX | Yahoo Finance | 工作日 |
+| 南向资金 | Tushare moneyflow_hsgt | 工作日 |
+| A 股两融余额 | Tushare margin | 工作日 |
+
+### 背景上下文（自动，Tushare）
+
+中国 CPI / M2 / 制造业 PMI / 新增社融 / 近 30 日 A 股 IPO
+
+### 手动指标（定性，需人工评估）
+
+叙事相变 · FOMC 措辞 · Warsh 表态 · 美股 Margin Debt · 散户期权杠杆 · AI 债务融资占比 · A 股 IPO 首日表现
+
+---
+
+## 技术架构
+
+```
+GitHub Secrets（TUSHARE_TOKEN，加密，不可见）
+        │
+        ▼  每个工作日 UTC 22:00 + 09:00
+GitHub Actions（境外云端）
+  fetch.py  ────────────────────────────────────────────────────────
+  │  FRED（免 key）   → SOFR/RRP/准备金/WALCL/PCE/油价/失业/MMF/HY利差
+  │  Yahoo（免 key）  → NVDA/MSFT/GOOGL/AMZN/META 价格，纳指，VIX
+  │  HKMA（免 key）   → 总结余，HIBOR
+  │  SEC EDGAR（免 key）→ NVDA 营收 QoQ，四巨头 capex QoQ
+  │  Tushare（token）  → 南向资金，两融余额，CPI/M2/PMI/社融/IPO
+  └─ 写入 data.json + history.json → git commit → git push
+        │
+        ▼
+  data.json（公开安全，只含派生数据，无任何密钥）
+  history.json（每日状态快照，用于趋势回放）
+        │
+        ▼
+GitHub Pages → index.html（纯静态）
+  · 每 30 分钟自动重载 data.json
+  · 切回标签页时刷新
+  · 本机浏览器存储手动覆盖状态（导出可备份）
+```
+
+**为什么必须云端取数**：FRED / Yahoo / HKMA 等境外源在中国大陆网络下会被 TCP reset（GFW）。GitHub Actions 跑在境外，可正常访问。Tushare 是境内源，本机也可直接取。
+
+---
+
+## 部署到 GitHub Pages
+
+### 前提
+
+- GitHub 账户
+- Tushare 账户（免费注册，取 token）：[tushare.pro/user/token](https://tushare.pro/user/token)
+
+### 步骤
+
+```bash
+# 1. 克隆或 fork 本仓库后，进入目录
+git clone https://github.com/StevenHuang2023/bubble-monitor.git
+cd bubble-monitor
+
+# 2. 本地创建 .env（绝不提交）
+echo "TUSHARE_TOKEN=你的token" > .env
+```
+
+然后在 GitHub 仓库设置里：
 
 1. **Settings → Secrets and variables → Actions → New repository secret**
-   名称 `TUSHARE_TOKEN`，值填你的（重新生成后的）Tushare token。
-2. **Settings → Pages**：Source 选 `main` 分支根目录，保存。几分钟后得到 `https://<你>.github.io/<仓库>/`。
-3. **Actions** 标签页 → 选 *Refresh dashboard data* → **Run workflow** 手动跑一次（首次生成真实 `data.json`）。之后按 `refresh.yml` 里的 cron 每个工作日自动刷新（美股收盘后、港A股收盘后各一次）。
+   - Name：`TUSHARE_TOKEN`
+   - Secret：你的 Tushare token
 
-网页打开后每 30 分钟自动重载 `data.json`，并在切回标签页时刷新。
+2. **Settings → Pages**
+   - Source：Deploy from a branch → `main`，目录 `/`
+   - 保存后几分钟得到 `https://<用户名>.github.io/<仓库名>/`
 
-## 本地预览
+3. **Actions 标签页** → *Refresh dashboard data* → **Run workflow**（首次手动触发取真实数据）
+
+此后每个工作日自动在 UTC 22:00（美股收盘后）和 09:00（港/A 股收盘后）各更新一次。
+
+### 本地预览
 
 ```bash
-cp data.sample.json data.json      # 用示例数据先看效果
-python3 -m http.server 8753        # 浏览器开 http://localhost:8753
-# 或：python3 serve.py             # 多一个 ↻ 实时重拉按钮（需能访问境外源）
+# 用示例数据预览页面效果（无需境外网络）
+cp data.sample.json data.json
+python3 -m http.server 8753
+# 浏览器打开 http://localhost:8753
 ```
 
-## 调阈值
+---
 
-自动状态的阈值都在 `fetch.py` 各 `build_*` 函数里、有中文注释（如 `SOFR−IORB ≥5bp 警报`、`ON RRP <250亿 观察`）。改完重新取数即可。状态只是"建议"，网页里任何指标手动点一下就能覆盖，再点一次取消、回落到自动。
+## 看板使用指南
 
-## 指标覆盖
+### 日常节奏
 
-- **自动**（FRED/Yahoo/HKMA/Tushare）：SOFR−IORB、ON RRP、银行准备金、WALCL、核心PCE、油价、失业率、MMF、HY利差、CAPE、巴菲特指标(市值/GDP)、香港总结余+HIBOR、南向资金、A股两融余额。
-- **自动·增速二阶导**（SEC EDGAR 官方 XBRL，免 key）：NVDA 营收 QoQ 增速及加速度、四巨头(MSFT/GOOGL/AMZN/META)合计 capex QoQ 增速及加速度——单季增速回落=观察、连续两季回落=警报（10-K 缺失的 Q4 用 全年−三季 推导；capex 未季调，留意季节性）。
-- **自动·背景上下文**（Tushare，墙内本地可取）：中国 CPI / M2 / 制造业PMI / 新增社融 / 近30日A股IPO。
-- **手动**（定性，机器替不了判断）：叙事相变、FOMC 措辞、Warsh 表态、AI 营收/capex 二阶导、美股 Margin Debt、散户期权、AI 债务融资占比、IPO 首日表现。
+**只看顶部「集中看触发器」**——5 个要点全部静默时，可以合上看板。任一动了，再逐项过全部指标。
 
-> 墙内/墙外差异：本地直接 `python3 fetch.py` 只能取到 Tushare 部分（南向、两融、中国宏观）；境外源（FRED/Yahoo/HKMA）必须由 GitHub Actions 在云端取。两者都会写进同一个 `data.json`。
+### 象限图解读
 
-## 看板用法
+| 象限位置 | 含义 | 建议 |
+|---|---|---|
+| 左下（炸药低 + 火柴低） | 平静期 | 低频关注 |
+| 右下（炸药高 + 火柴低） | 估值贵，但没人抽水 | 不要因"太贵"减仓；等火柴 |
+| 左上（炸药低 + 火柴高） | 有人收紧，但市场结构健康 | 留意，通常是虚惊 |
+| **右上（炸药高 + 火柴高）** | **完整红灯** | **逐步降暴露** |
 
-- **趋势 · 增还是减**：当前态势卡里的双线趋势图回放 `history.json` 每日快照算出的炸药/火柴分数（自动口径，今日一点含手动覆盖），并给出近 7 日 Δ——直接回答框架的核心问题"炸药量在增还是减"。象限图上的小白点是光点最近 12 天的轨迹。历史由云端 Actions 每日积累，需要跑几天后才出现。
-- 数据超过 4 天未更新时，页头会出现 ⚠ 警告（Actions 挂了能立刻看出来）。
-- **当前态势**卡底部的「当前亮灯」列出所有处于观察/警报的指标（自动+手动），点击直接跳到对应卡片。
-- 每个量化卡显示实时读数 + 迷你走势图 + 蓝色「自动」标；手动点状态即覆盖（显示「手动覆盖」），再点一次取消、回落自动。
-- 顶部「集中看触发器」只盯 5 个引爆点（FOMC 措辞 / 资产负债表收缩 / Warsh / SOFR / 叙事相变），任一动了才需全面复盘。
+### 趋势图
+
+「当前态势」卡内的双线趋势图回放 `history.json` 每日快照，算出历史上每天的炸药量 / 火柴分数，并给出近 7 日变化量。直接回答框架的核心问题：**炸药量在增还是减**。
+
+象限图上的小白点是光点最近 12 天的移动轨迹。
+
+### 手动覆盖
+
+点击任意指标卡的状态按钮（正常 / 观察 / 警报）即可手动覆盖。再点一次取消、回落到自动数据。手动状态存在本机浏览器里，换设备前用「导出」备份 JSON。
+
+### 当前亮灯
+
+「当前态势」卡底部列出所有处于观察 / 警报状态的指标，点击直接跳转到对应卡片。
+
+---
+
+## 调整阈值
+
+自动状态的阈值全在 `fetch.py` 各 `build_*` 函数里，有中文注释。例如：
+
+```python
+# SOFR − IORB ≥ 5bp → 警报
+# ON RRP < 1000 亿 → 观察
+# ON RRP < 250 亿 → 警报
+```
+
+修改后下次 Actions 运行时生效。也可以在任意指标卡手动覆盖状态，无需改代码。
+
+---
+
+## 安全说明
+
+- `TUSHARE_TOKEN` 仅存于 GitHub **仓库 Secret**（加密，即使仓库所有者也无法查看明文）
+- `fetch.py` 只读环境变量 `os.environ.get("TUSHARE_TOKEN")`，token 不写入任何文件
+- `data.json` 和 `history.json` 只包含派生的公开数据（价格、利率、指标状态），无任何密钥
+- `.env` 文件已在 `.gitignore` 中排除，永不提交
+
+---
+
+## 免责声明
+
+本看板为个人研究工具，记录结构性风险的变化趋势。不构成投资建议，不预测具体点位或时间，作者不对据此操作产生的任何损益负责。
+
+---
+
+*数据来源：FRED（美联储圣路易斯联储）· Yahoo Finance · HKMA（香港金管局）· SEC EDGAR · Tushare · multpl.com*
