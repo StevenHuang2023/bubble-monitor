@@ -1,0 +1,33 @@
+{
+ "_note": "示例数据，仅用于本地预览页面填充效果。真实数据由 GitHub Actions 运行 fetch.py 覆盖到 data.json。预览：cp data.sample.json data.json",
+ "generated": "2026-06-08T14:00:00+00:00",
+ "indicators": {
+  "sofr": {"value": 2.0, "label": "SOFR−IORB +2.0bp", "status": "watch", "detail": "SOFR 4.33% vs IORB 4.31%；持续 >0 = 回购市场紧张", "series": [-4,-3,-3,-2,-2,-1,-1,0,0,1,1,2,1,2,2], "unit": "bp", "asof": "2026-06-05", "auto": true},
+  "rrp": {"value": 38.0, "label": "ON RRP $38B", "status": "alert", "detail": "隔夜逆回购 $38B；趋近枯竭=再抽就抽到银行准备金本身", "series": [420,360,300,250,210,170,140,110,90,72,60,52,46,41,38], "unit": "B$", "asof": "2026-06-05", "auto": true},
+  "reserves": {"value": 2920, "label": "准备金 $2,920B", "status": "watch", "detail": "银行准备金 $2,920B；美联储称已到“仅够用”附近", "series": [3300,3250,3210,3180,3120,3080,3040,3010,2990,2960,2940,2920], "unit": "B$", "asof": "2026-06-04", "auto": true},
+  "qt_balance": {"value": 6.61, "label": "表 $6.61T", "status": "watch", "detail": "资产负债表 $6.61T；近13周-0.18T（缩表加速）", "series": [6.95,6.92,6.88,6.85,6.82,6.79,6.75,6.72,6.69,6.66,6.63,6.61], "unit": "T$", "asof": "2026-06-04", "auto": true},
+  "cpi": {"value": 3.1, "label": "核心PCE 3.1%", "status": "watch", "detail": "核心PCE 同比 3.10%（回升中）；>3%且回升=卡住降息那条腿", "series": [2.6,2.6,2.7,2.7,2.8,2.8,2.9,2.9,3.0,3.0,3.1], "unit": "%", "asof": "2026-04-30", "auto": true},
+  "oil": {"value": 71.0, "label": "WTI $71", "status": "normal", "detail": "WTI 原油 $71.0，近3月-4%", "series": [76,75,74,73,74,72,71,70,72,71], "unit": "$", "asof": "2026-06-06", "auto": true},
+  "jobs": {"value": 4.3, "label": "失业率 4.3%", "status": "watch", "detail": "失业率 4.3%；近3月均值较12月低点 +0.4", "series": [3.9,3.9,4.0,4.0,4.1,4.1,4.2,4.2,4.3], "unit": "%", "asof": "2026-05-31", "auto": true},
+  "mmf": {"value": 7.95, "label": "MMF $7.95T", "status": "normal", "detail": "货币基金总资产 $7.95T，环比+$0.04T", "series": [7.4,7.6,7.8,7.9,7.95], "unit": "T$", "asof": "2026-03-31", "auto": true},
+  "aicost": {"value": 3.6, "label": "HY利差 3.60%", "status": "normal", "detail": "高收益债利差 3.60%", "series": [3.2,3.3,3.3,3.4,3.5,3.4,3.6,3.6], "unit": "%", "asof": "2026-06-06", "auto": true},
+  "cape": {"value": 38.5, "label": "CAPE 38.5", "status": "watch", "detail": "Shiller PE 38.5（海拔表·背景，不择时）", "series": [], "unit": "x", "asof": "", "auto": true},
+  "buffett": {"value": 198, "label": "市值/GDP 198%", "status": "watch", "detail": "巴菲特指标 198%（历史均值~85%，>150% 极端海拔；背景指标，不择时）", "series": [172,175,180,178,185,190,188,193,198], "unit": "%", "asof": "2026-01-01", "auto": true},
+  "rev2d": {"value": 9.8, "label": "NVDA营收QoQ +9.8%", "status": "watch", "detail": "NVDA 季度营收环比 +14.2%→+9.8%（加速度 -4.4pp，单季回落）；市场按加速度定价，加速度转负早于价格见顶", "series": [22.1,18.4,15.2,16.8,14.2,9.8], "unit": "%", "asof": "2026-04-26", "auto": true},
+  "capex2d": {"value": 6.1, "label": "巨头capex QoQ +6.1%", "status": "normal", "detail": "AMZN+GOOGL+META+MSFT 合计资本开支环比 +4.0%→+6.1%（加速度 +2.1pp；未季调，留意季节性）", "series": [8.2,11.6,5.3,9.1,4.0,6.1], "unit": "%", "asof": "2026-03-31", "auto": true},
+  "hk_liq": {"value": 720.0, "label": "总结余 720亿", "status": "normal", "detail": "香港银行体系总结余 720亿港元；隔夜HIBOR 3.85%", "series": [950,900,880,820,800,780,760,740,720], "unit": "亿HKD", "asof": "2026-06-06", "auto": true},
+  "southbound": {"value": -85.0, "label": "南向5日 -85亿", "status": "watch", "detail": "南向资金近5日净流出 85亿元", "series": [60,40,-20,30,-50,-10,-30,20,-40,-25,-15,-30], "unit": "亿元", "asof": "2026-06-06", "auto": true},
+  "cn_margin": {"value": 2.88, "label": "两融 2.88万亿", "status": "watch", "detail": "A股融资融券余额 2.88万亿，20日+1.7%，创区间新高；借来的钱接盘=破灭时连锁清算", "series": [2.61,2.6,2.58,2.6,2.63,2.66,2.67,2.7,2.72,2.71,2.73,2.72,2.76,2.79,2.8,2.83,2.85,2.87,2.88,2.9,2.91,2.94,2.92,2.88], "unit": "万亿", "asof": "2026-06-08", "auto": true}
+ },
+ "context": {
+  "ai_momentum": "AI龙头近3月: NVDA +18% · MSFT +7% · GOOGL +11% · AMZN +5% · META +14%（仅价格动能）",
+  "ndx": "纳指 21,450（3月 +9%）",
+  "vix": "VIX 16.8",
+  "cn_cpi": "中国CPI 1.2% YoY (202604)",
+  "cn_m2": "中国M2 8.6% YoY (202604)",
+  "cn_pmi": "制造业PMI 50.0（扩张，202605）",
+  "cn_sf": "新增社融 0.62万亿（202604）",
+  "cn_ipo": "近30日A股IPO 11家、募资约65亿（A股抽水参考）"
+ },
+ "errors": []
+}

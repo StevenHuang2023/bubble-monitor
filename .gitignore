@@ -1,0 +1,21 @@
+# ==== 密钥：永不提交 ====
+.env
+.env.*
+!.env.example
+*.local
+config.local.json
+secrets.json
+*token*
+*.key
+
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# 本地预览配置
+.claude/
+
+# 系统
+.DS_Store
