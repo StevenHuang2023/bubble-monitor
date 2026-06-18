@@ -19,6 +19,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124 Safari/537.36")
 CTX = ssl.create_default_context()
+_YF_SESSION = {}   # 缓存 Yahoo Finance 的 cookie jar + crumb（避免重复握手）
 
 def load_env():
     p = os.path.join(ROOT, ".env")
@@ -37,7 +38,7 @@ def err(src, e):
     ERRORS.append(f"{src}: {e}")
     print(f"  ! {src}: {e}", file=sys.stderr)
 
-def http(url, data=None, headers=None, timeout=25, retries=2):
+def http(url, data=None, headers=None, timeout=45, retries=3):
     h = {"User-Agent": UA}
     if headers: h.update(headers)
     last = None
@@ -49,13 +50,13 @@ def http(url, data=None, headers=None, timeout=25, retries=2):
         except Exception as e:
             last = e
             if attempt < retries:
-                time.sleep(1.5 * (attempt + 1))  # 退避重试，缓解瞬时失败/限流
+                time.sleep(3 * (attempt + 1))  # 退避重试：3s / 6s / 9s
     raise last
 
 # ---------- 数据源 ----------
 def fred(series_id):
     """FRED fredgraph.csv（无需 key），返回 [(date,float)] 升序。"""
-    txt = http(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}")
+    txt = http(f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}", timeout=60)
     out = []
     for ln in txt.splitlines()[1:]:
         if "," not in ln: continue
@@ -65,13 +66,50 @@ def fred(series_id):
         except ValueError: pass
     return out
 
+def _yahoo_init():
+    """获取 Yahoo Finance cookie + crumb（2024+ 必须，否则 429）。结果缓存在模块级。"""
+    global _YF_SESSION
+    if _YF_SESSION.get("crumb"):
+        return _YF_SESSION
+    try:
+        import http.cookiejar
+        jar = http.cookiejar.CookieJar()
+        opener = urllib.request.build_opener(
+            urllib.request.HTTPCookieProcessor(jar),
+            urllib.request.HTTPSHandler(context=CTX))
+        # 第一步：访问 fc.yahoo.com 拿 cookie
+        req1 = urllib.request.Request("https://fc.yahoo.com", headers={"User-Agent": UA})
+        try: opener.open(req1, timeout=15)
+        except Exception: pass
+        # 第二步：用 cookie 拿 crumb
+        req2 = urllib.request.Request(
+            "https://query1.finance.yahoo.com/v1/test/getcrumb",
+            headers={"User-Agent": UA, "Accept": "*/*"})
+        with opener.open(req2, timeout=15) as r:
+            crumb = r.read().decode().strip()
+        if crumb and len(crumb) < 30:  # crumb 通常 8–12 字符
+            _YF_SESSION = {"opener": opener, "crumb": crumb}
+    except Exception as e:
+        _YF_SESSION = {"opener": None, "crumb": ""}
+    return _YF_SESSION
+
 def yahoo(symbol, rng="6mo"):
     s = urllib.parse.quote(symbol)
+    sess = _yahoo_init()
+    opener = sess.get("opener")
+    crumb = sess.get("crumb", "")
     last = None
-    for host in ("query1", "query2"):  # query1 限流时退到 query2
+    for host in ("query1", "query2"):
         try:
-            url = f"https://{host}.finance.yahoo.com/v8/finance/chart/{s}?range={rng}&interval=1d"
-            j = json.loads(http(url, retries=1))
+            qs = f"range={rng}&interval=1d"
+            if crumb: qs += f"&crumb={urllib.parse.quote(crumb)}"
+            url = f"https://{host}.finance.yahoo.com/v8/finance/chart/{s}?{qs}"
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept": "*/*"})
+            if opener:
+                with opener.open(req, timeout=30) as r:
+                    j = json.loads(r.read())
+            else:
+                j = json.loads(http(url, timeout=30, retries=1))
             res = j["chart"]["result"][0]
             ts, cl = res["timestamp"], res["indicators"]["quote"][0]["close"]
             out = []
@@ -81,6 +119,7 @@ def yahoo(symbol, rng="6mo"):
             return out
         except Exception as e:
             last = e
+            time.sleep(2)
     raise last
 
 def hkma(path, pagesize=50):
@@ -294,9 +333,12 @@ def build_ai_fundamentals():
         for s in ("MSFT", "GOOGL", "AMZN", "META"):
             try: per[s] = dict(edgar_quarters(s, CAPEX_TAGS))
             except Exception as e: err(f"EDGAR {s} capex", e)
-        if len(per) < 3: raise RuntimeError(f"可用公司不足({len(per)}/4)")
-        common = sorted(set.intersection(*[set(d) for d in per.values()]))
-        tot = [(k, sum(d[k] for d in per.values())) for k in common]
+        if len(per) < 2: raise RuntimeError(f"可用公司不足({len(per)}/4)")
+        # 用有数据的公司的并集日期，每期只汇总有数据的公司（允许部分缺失）
+        all_dates = sorted(set().union(*[set(d) for d in per.values()]))
+        # 只保留至少有 2 家公司均有数据的期
+        common = [k for k in all_dates if sum(1 for d in per.values() if k in d) >= 2]
+        tot = [(k, sum(d[k] for d in per.values() if k in d)) for k in common]
         g = [(tot[i][0], (tot[i][1] / tot[i - 1][1] - 1) * 100) for i in range(1, len(tot)) if tot[i - 1][1]]
         if len(g) < 3: raise RuntimeError("增速点不足")
         d0, g0, g1, st, note = grade(g)
@@ -317,11 +359,15 @@ def build_hk():
         ser = [to_b(r[bk]) for r in recs if r.get(bk) not in (None, "")][::-1]
         bal = to_b(rec[bk]); d = rec.get("end_of_date", "")
         hib = None
-        try:
-            hr = hkma("hk-interbank-interest-rates")[0]
-            ok = next((k for k in hr if "overnight" in k.lower()), None)
-            hib = float(hr[ok]) if ok and hr.get(ok) not in (None, "") else None
-        except Exception as e: err("HKMA HIBOR", e)
+        for hibor_path in ("daily-figures-interbank-interest-rates",
+                           "hk-interbank-interest-rates",
+                           "interbank-interest-rates"):
+            try:
+                hr = hkma(hibor_path)[0]
+                ok = next((k for k in hr if "overnight" in k.lower() or "on_" in k.lower()), None)
+                hib = float(hr[ok]) if ok and hr.get(ok) not in (None, "") else None
+                break
+            except Exception: pass
         st = "watch" if bal < 500 else "normal"   # 总结余<500亿港元偏紧（启发式）
         put("hk_liq", round(bal, 1), f"总结余 {bal:.0f}亿", st,
             f"香港银行体系总结余 {bal:.0f}亿港元" + (f"；隔夜HIBOR {hib:.2f}%" if hib is not None else ""),
