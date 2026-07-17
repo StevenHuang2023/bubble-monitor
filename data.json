@@ -1,11 +1,11 @@
 {
- "generated": "2026-07-17T11:30:57+00:00",
+ "generated": "2026-07-17T23:26:46+00:00",
  "indicators": {
   "cape": {
-   "value": 41.9,
-   "label": "CAPE 41.9",
+   "value": 41.5,
+   "label": "CAPE 41.5",
    "status": "watch",
-   "detail": "Shiller PE 41.9（海拔表·背景，不择时；>30偏贵 >35极端）",
+   "detail": "Shiller PE 41.5（海拔表·背景，不择时；>30偏贵 >35极端）",
    "series": [],
    "unit": "x",
    "asof": "",
