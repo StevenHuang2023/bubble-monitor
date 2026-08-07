@@ -1,5 +1,5 @@
 {
- "generated": "2026-08-07T02:15:40+00:00",
+ "generated": "2026-08-07T10:45:48+00:00",
  "indicators": {
   "cape": {
    "value": 42.1,
@@ -12,12 +12,11 @@
    "auto": true
   },
   "southbound": {
-   "value": 102.6,
-   "label": "南向5日 +103亿",
+   "value": 99.7,
+   "label": "南向5日 +100亿",
    "status": "normal",
-   "detail": "南向资金近5日净流入 103亿元，20日累计 +260亿（20260806）；持续净流出=港股资金面警报",
+   "detail": "南向资金近5日净流入 100亿元，20日累计 +312亿（20260807）；持续净流出=港股资金面警报",
    "series": [
-    18.8,
     46.6,
     22.2,
     186.8,
@@ -64,10 +63,11 @@
     110.3,
     25.7,
     -14.0,
-    -14.6
+    -14.6,
+    -7.8
    ],
    "unit": "亿元",
-   "asof": "2026-08-06",
+   "asof": "2026-08-07",
    "auto": true
   },
   "cn_margin": {
@@ -198,7 +198,7 @@
   "FRED MMF: The read operation timed out",
   "FRED HY利差: The read operation timed out",
   "FRED 巴菲特指标: The read operation timed out",
-  "HKMA 总结余: The read operation timed out",
+  "HKMA 总结余: HTTP Error 502: Bad Gateway",
   "Yahoo NVDA: HTTP Error 429: Too Many Requests",
   "Yahoo MSFT: HTTP Error 429: Too Many Requests",
   "Yahoo GOOGL: HTTP Error 429: Too Many Requests",
