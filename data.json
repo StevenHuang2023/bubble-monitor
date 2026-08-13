@@ -1,23 +1,22 @@
 {
- "generated": "2026-08-13T10:47:57+00:00",
+ "generated": "2026-08-13T23:18:45+00:00",
  "indicators": {
   "cape": {
-   "value": 42.3,
-   "label": "CAPE 42.3",
+   "value": 42.6,
+   "label": "CAPE 42.6",
    "status": "watch",
-   "detail": "Shiller PE 42.3（海拔表·背景，不择时；>30偏贵 >35极端）",
+   "detail": "Shiller PE 42.6（海拔表·背景，不择时；>30偏贵 >35极端）",
    "series": [],
    "unit": "x",
    "asof": "",
    "auto": true
   },
   "hk_liq": {
-   "value": 81.9,
+   "value": 82.4,
    "label": "总结余 82亿",
    "status": "watch",
    "detail": "香港银行体系总结余 82亿港元",
    "series": [
-    122.9,
     130.1,
     119.0,
     127.3,
@@ -64,10 +63,11 @@
     106.2,
     86.1,
     84.5,
-    81.9
+    81.9,
+    82.4
    ],
    "unit": "亿HKD",
-   "asof": "2026-08-12",
+   "asof": "2026-08-13",
    "auto": true
   },
   "southbound": {
