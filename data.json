@@ -1,11 +1,11 @@
 {
- "generated": "2026-09-11T13:59:42+00:00",
+ "generated": "2026-09-12T00:30:07+00:00",
  "indicators": {
   "cape": {
-   "value": 40.7,
-   "label": "CAPE 40.7",
+   "value": 41.1,
+   "label": "CAPE 41.1",
    "status": "watch",
-   "detail": "Shiller PE 40.7（海拔表·背景，不择时；>30偏贵 >35极端）",
+   "detail": "Shiller PE 41.1（海拔表·背景，不择时；>30偏贵 >35极端）",
    "series": [],
    "unit": "x",
    "asof": "",
@@ -130,12 +130,11 @@
    "auto": true
   },
   "cn_margin": {
-   "value": 2.65,
-   "label": "两融 2.65万亿",
+   "value": 1.35,
+   "label": "两融 1.35万亿",
    "status": "normal",
-   "detail": "A股融资融券余额 2.65万亿，20日-1.1%；借来的钱接盘=破灭时连锁清算",
+   "detail": "A股融资融券余额 1.35万亿，20日-49.5%；借来的钱接盘=破灭时连锁清算",
    "series": [
-    2.979,
     2.96,
     2.956,
     2.945,
@@ -182,10 +181,11 @@
     2.649,
     2.652,
     2.649,
-    2.646
+    2.646,
+    1.35
    ],
    "unit": "万亿",
-   "asof": "2026-09-10",
+   "asof": "2026-09-11",
    "auto": true
   },
   "rev2d": {
@@ -243,7 +243,9 @@
   "cn_m2": "中国M2 7.7% YoY (202607)",
   "cn_pmi": "制造业PMI 49.8（收缩，202608）",
   "cn_sf": "新增社融 1.40万亿（202607）",
-  "cn_ipo": "近30日A股IPO 20家、募资约227亿（A股抽水参考）"
+  "cn_ipo": "近30日A股IPO 19家、募资约222亿（A股抽水参考）",
+  "ai_momentum": "AI龙头近3月: META +14%（仅价格动能）",
+  "ndx": "纳指 26,333（3月 +2%）"
  },
  "errors": [
   "FRED SOFR/IORB: The read operation timed out",
@@ -261,8 +263,6 @@
   "Yahoo MSFT: HTTP Error 429: Too Many Requests",
   "Yahoo GOOGL: HTTP Error 429: Too Many Requests",
   "Yahoo AMZN: HTTP Error 429: Too Many Requests",
-  "Yahoo META: HTTP Error 429: Too Many Requests",
-  "Yahoo 纳指: HTTP Error 429: Too Many Requests",
   "Yahoo VIX: HTTP Error 429: Too Many Requests"
  ]
 }
