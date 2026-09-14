@@ -1,5 +1,5 @@
 {
- "generated": "2026-09-12T00:30:07+00:00",
+ "generated": "2026-09-14T16:24:46+00:00",
  "indicators": {
   "cape": {
    "value": 41.1,
@@ -12,12 +12,11 @@
    "auto": true
   },
   "hk_liq": {
-   "value": 88.8,
-   "label": "总结余 89亿",
+   "value": 93.0,
+   "label": "总结余 93亿",
    "status": "watch",
-   "detail": "香港银行体系总结余 89亿港元",
+   "detail": "香港银行体系总结余 93亿港元",
    "series": [
-    121.1,
     87.7,
     107.1,
     92.1,
@@ -64,19 +63,19 @@
     125.6,
     85.8,
     81.6,
-    88.8
+    88.8,
+    93.0
    ],
    "unit": "亿HKD",
-   "asof": "2026-09-11",
+   "asof": "2026-09-14",
    "auto": true
   },
   "southbound": {
-   "value": 201.1,
-   "label": "南向5日 +201亿",
+   "value": 233.0,
+   "label": "南向5日 +233亿",
    "status": "normal",
-   "detail": "南向资金近5日净流入 201亿元，20日累计 +257亿（20260911）；持续净流出=港股资金面警报",
+   "detail": "南向资金近5日净流入 233亿元，20日累计 +270亿（20260914）；持续净流出=港股资金面警报",
    "series": [
-    141.9,
     98.3,
     -60.0,
     90.4,
@@ -123,17 +122,18 @@
     61.3,
     37.2,
     45.5,
-    44.3
+    44.3,
+    44.7
    ],
    "unit": "亿元",
-   "asof": "2026-09-11",
+   "asof": "2026-09-14",
    "auto": true
   },
   "cn_margin": {
-   "value": 1.35,
-   "label": "两融 1.35万亿",
+   "value": 2.63,
+   "label": "两融 2.63万亿",
    "status": "normal",
-   "detail": "A股融资融券余额 1.35万亿，20日-49.5%；借来的钱接盘=破灭时连锁清算",
+   "detail": "A股融资融券余额 2.63万亿，20日-1.6%；借来的钱接盘=破灭时连锁清算",
    "series": [
     2.96,
     2.956,
@@ -182,7 +182,7 @@
     2.652,
     2.649,
     2.646,
-    1.35
+    2.632
    ],
    "unit": "万亿",
    "asof": "2026-09-11",
@@ -239,13 +239,11 @@
   }
  },
  "context": {
-  "cn_cpi": "中国CPI 0.5% YoY (202607)",
+  "cn_cpi": "中国CPI 0.8% YoY (202608)",
   "cn_m2": "中国M2 7.7% YoY (202607)",
   "cn_pmi": "制造业PMI 49.8（收缩，202608）",
   "cn_sf": "新增社融 1.40万亿（202607）",
-  "cn_ipo": "近30日A股IPO 19家、募资约222亿（A股抽水参考）",
-  "ai_momentum": "AI龙头近3月: META +14%（仅价格动能）",
-  "ndx": "纳指 26,333（3月 +2%）"
+  "cn_ipo": "近30日A股IPO 19家、募资约209亿（A股抽水参考）"
  },
  "errors": [
   "FRED SOFR/IORB: The read operation timed out",
@@ -263,6 +261,8 @@
   "Yahoo MSFT: HTTP Error 429: Too Many Requests",
   "Yahoo GOOGL: HTTP Error 429: Too Many Requests",
   "Yahoo AMZN: HTTP Error 429: Too Many Requests",
+  "Yahoo META: HTTP Error 429: Too Many Requests",
+  "Yahoo 纳指: HTTP Error 429: Too Many Requests",
   "Yahoo VIX: HTTP Error 429: Too Many Requests"
  ]
 }
