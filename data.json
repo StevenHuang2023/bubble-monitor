@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-08T02:13:09+00:00",
+ "generated": "2026-10-08T16:53:24+00:00",
  "indicators": {
   "cape": {
    "value": 41.8,
@@ -12,12 +12,11 @@
    "auto": true
   },
   "hk_liq": {
-   "value": 115.0,
-   "label": "总结余 115亿",
+   "value": 79.3,
+   "label": "总结余 79亿",
    "status": "watch",
-   "detail": "香港银行体系总结余 115亿港元",
+   "detail": "香港银行体系总结余 79亿港元",
    "series": [
-    114.7,
     106.4,
     104.7,
     99.6,
@@ -64,19 +63,19 @@
     100.8,
     89.1,
     84.7,
-    115.0
+    115.0,
+    79.3
    ],
    "unit": "亿HKD",
-   "asof": "2026-10-07",
+   "asof": "2026-10-08",
    "auto": true
   },
   "southbound": {
-   "value": 66.7,
-   "label": "南向5日 +67亿",
+   "value": 97.0,
+   "label": "南向5日 +97亿",
    "status": "normal",
-   "detail": "南向资金近5日净流入 67亿元，20日累计 +530亿（20260930）；持续净流出=港股资金面警报",
+   "detail": "南向资金近5日净流入 97亿元，20日累计 +554亿（20261008）；持续净流出=港股资金面警报",
    "series": [
-    -15.2,
     -15.8,
     -24.9,
     -55.9,
@@ -123,10 +122,11 @@
     29.0,
     -65.5,
     0.1,
-    68.6
+    68.6,
+    64.8
    ],
    "unit": "亿元",
-   "asof": "2026-09-30",
+   "asof": "2026-10-08",
    "auto": true
   },
   "cn_margin": {
@@ -253,7 +253,7 @@
   "FRED 核心PCE: The read operation timed out",
   "Yahoo CL=F: HTTP Error 429: Too Many Requests",
   "FRED WTI: The read operation timed out",
-  "FRED 失业率: The read operation timed out",
+  "FRED 失业率: <urlopen error [Errno -3] Temporary failure in name resolution>",
   "FRED MMF: The read operation timed out",
   "FRED HY利差: The read operation timed out",
   "FRED 巴菲特指标: The read operation timed out",
