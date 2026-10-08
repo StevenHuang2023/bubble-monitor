@@ -1,11 +1,11 @@
 {
- "generated": "2026-10-07T16:50:44+00:00",
+ "generated": "2026-10-08T02:13:09+00:00",
  "indicators": {
   "cape": {
-   "value": 41.9,
-   "label": "CAPE 41.9",
+   "value": 41.8,
+   "label": "CAPE 41.8",
    "status": "watch",
-   "detail": "Shiller PE 41.9（海拔表·背景，不择时；>30偏贵 >35极端）",
+   "detail": "Shiller PE 41.8（海拔表·背景，不择时；>30偏贵 >35极端）",
    "series": [],
    "unit": "x",
    "asof": "",
@@ -130,10 +130,10 @@
    "auto": true
   },
   "cn_margin": {
-   "value": 1.32,
-   "label": "两融 1.32万亿",
+   "value": 2.57,
+   "label": "两融 2.57万亿",
    "status": "normal",
-   "detail": "A股融资融券余额 1.32万亿，20日-50.7%；借来的钱接盘=破灭时连锁清算",
+   "detail": "A股融资融券余额 2.57万亿，20日-3.6%；借来的钱接盘=破灭时连锁清算",
    "series": [
     2.688,
     2.699,
@@ -182,7 +182,7 @@
     2.637,
     2.611,
     2.609,
-    1.315
+    2.57
    ],
    "unit": "万亿",
    "asof": "2026-09-30",
@@ -243,7 +243,7 @@
   "cn_m2": "中国M2 7.5% YoY (202608)",
   "cn_pmi": "制造业PMI 50.1（扩张，202609）",
   "cn_sf": "新增社融 1.66万亿（202608）",
-  "cn_ipo": "近30日A股IPO 13家、募资约171亿（A股抽水参考）"
+  "cn_ipo": "近30日A股IPO 12家、募资约170亿（A股抽水参考）"
  },
  "errors": [
   "FRED SOFR/IORB: The read operation timed out",
