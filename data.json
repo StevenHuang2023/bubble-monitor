@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-24T00:55:42+00:00",
+ "generated": "2026-10-26T16:36:05+00:00",
  "indicators": {
   "cape": {
    "value": 40.4,
@@ -12,12 +12,11 @@
    "auto": true
   },
   "hk_liq": {
-   "value": 103.4,
-   "label": "总结余 103亿",
+   "value": 104.0,
+   "label": "总结余 104亿",
    "status": "watch",
-   "detail": "香港银行体系总结余 103亿港元",
+   "detail": "香港银行体系总结余 104亿港元",
    "series": [
-    78.3,
     83.6,
     95.7,
     92.4,
@@ -64,19 +63,19 @@
     103.0,
     116.2,
     101.0,
-    103.4
+    103.4,
+    104.0
    ],
    "unit": "亿HKD",
-   "asof": "2026-10-23",
+   "asof": "2026-10-26",
    "auto": true
   },
   "southbound": {
-   "value": -206.1,
-   "label": "南向5日 -206亿",
+   "value": -191.2,
+   "label": "南向5日 -191亿",
    "status": "watch",
-   "detail": "南向资金近5日净流出 206亿元，20日累计 +111亿（20261023）；持续净流出=港股资金面警报",
+   "detail": "南向资金近5日净流出 191亿元，20日累计 +56亿（20261026）；持续净流出=港股资金面警报",
    "series": [
-    20.2,
     -13.8,
     -29.1,
     36.7,
@@ -123,17 +122,18 @@
     -17.2,
     -44.3,
     -92.2,
-    -16.7
+    -16.7,
+    -20.8
    ],
    "unit": "亿元",
-   "asof": "2026-10-23",
+   "asof": "2026-10-26",
    "auto": true
   },
   "cn_margin": {
-   "value": 1.26,
-   "label": "两融 1.26万亿",
+   "value": 2.43,
+   "label": "两融 2.43万亿",
    "status": "normal",
-   "detail": "A股融资融券余额 1.26万亿，20日-52.4%；借来的钱接盘=破灭时连锁清算",
+   "detail": "A股融资融券余额 2.43万亿，20日-7.9%；借来的钱接盘=破灭时连锁清算",
    "series": [
     2.663,
     2.673,
@@ -182,7 +182,7 @@
     2.48,
     2.479,
     2.456,
-    1.256
+    2.432
    ],
    "unit": "万亿",
    "asof": "2026-10-23",
@@ -243,7 +243,8 @@
   "cn_m2": "中国M2 7.2% YoY (202609)",
   "cn_pmi": "制造业PMI 50.1（扩张，202609）",
   "cn_sf": "新增社融 3.55万亿（202609）",
-  "cn_ipo": "近30日A股IPO 8家、募资约114亿（A股抽水参考）"
+  "cn_ipo": "近30日A股IPO 7家、募资约43亿（A股抽水参考）",
+  "ai_momentum": "AI龙头近3月: AMZN +8%（仅价格动能）"
  },
  "errors": [
   "FRED SOFR/IORB: The read operation timed out",
@@ -260,7 +261,6 @@
   "Yahoo NVDA: HTTP Error 429: Too Many Requests",
   "Yahoo MSFT: HTTP Error 429: Too Many Requests",
   "Yahoo GOOGL: HTTP Error 429: Too Many Requests",
-  "Yahoo AMZN: HTTP Error 429: Too Many Requests",
   "Yahoo META: HTTP Error 429: Too Many Requests",
   "Yahoo 纳指: HTTP Error 429: Too Many Requests",
   "Yahoo VIX: HTTP Error 429: Too Many Requests"
