@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-27T01:47:05+00:00",
+ "generated": "2026-10-27T15:52:51+00:00",
  "indicators": {
   "cape": {
    "value": 40.7,
@@ -12,12 +12,11 @@
    "auto": true
   },
   "hk_liq": {
-   "value": 104.0,
-   "label": "总结余 104亿",
+   "value": 102.0,
+   "label": "总结余 102亿",
    "status": "watch",
-   "detail": "香港银行体系总结余 104亿港元",
+   "detail": "香港银行体系总结余 102亿港元",
    "series": [
-    83.6,
     95.7,
     92.4,
     102.4,
@@ -64,19 +63,19 @@
     116.2,
     101.0,
     103.4,
-    104.0
+    104.0,
+    102.0
    ],
    "unit": "亿HKD",
-   "asof": "2026-10-26",
+   "asof": "2026-10-27",
    "auto": true
   },
   "southbound": {
-   "value": -191.2,
-   "label": "南向5日 -191亿",
+   "value": -186.4,
+   "label": "南向5日 -186亿",
    "status": "watch",
-   "detail": "南向资金近5日净流出 191亿元，20日累计 +56亿（20261026）；持续净流出=港股资金面警报",
+   "detail": "南向资金近5日净流出 186亿元，20日累计 +32亿（20261027）；持续净流出=港股资金面警报",
    "series": [
-    -13.8,
     -29.1,
     36.7,
     -13.2,
@@ -123,10 +122,11 @@
     -44.3,
     -92.2,
     -16.7,
-    -20.8
+    -20.8,
+    -12.4
    ],
    "unit": "亿元",
-   "asof": "2026-10-26",
+   "asof": "2026-10-27",
    "auto": true
   },
   "cn_margin": {
@@ -243,7 +243,8 @@
   "cn_m2": "中国M2 7.2% YoY (202609)",
   "cn_pmi": "制造业PMI 50.1（扩张，202609）",
   "cn_sf": "新增社融 3.55万亿（202609）",
-  "cn_ipo": "近30日A股IPO 7家、募资约43亿（A股抽水参考）"
+  "cn_ipo": "近30日A股IPO 7家、募资约43亿（A股抽水参考）",
+  "ai_momentum": "AI龙头近3月: META +5%（仅价格动能）"
  },
  "errors": [
   "FRED SOFR/IORB: The read operation timed out",
@@ -261,7 +262,6 @@
   "Yahoo MSFT: HTTP Error 429: Too Many Requests",
   "Yahoo GOOGL: HTTP Error 429: Too Many Requests",
   "Yahoo AMZN: HTTP Error 429: Too Many Requests",
-  "Yahoo META: HTTP Error 429: Too Many Requests",
   "Yahoo 纳指: HTTP Error 429: Too Many Requests",
   "Yahoo VIX: HTTP Error 429: Too Many Requests"
  ]
