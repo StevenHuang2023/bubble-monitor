@@ -1,16 +1,6 @@
 {
- "generated": "2026-11-23T21:37:41+00:00",
+ "generated": "2026-11-24T06:27:20+00:00",
  "indicators": {
-  "cape": {
-   "value": 36.4,
-   "label": "CAPE 36.4",
-   "status": "watch",
-   "detail": "Shiller PE 36.4（海拔表·背景，不择时；>30偏贵 >35极端）",
-   "series": [],
-   "unit": "x",
-   "asof": "",
-   "auto": true
-  },
   "hk_liq": {
    "value": 141.7,
    "label": "总结余 142亿",
@@ -130,12 +120,11 @@
    "auto": true
   },
   "cn_margin": {
-   "value": 2.18,
-   "label": "两融 2.18万亿",
+   "value": 2.17,
+   "label": "两融 2.17万亿",
    "status": "normal",
-   "detail": "A股融资融券余额 2.18万亿，20日-10.4%；借来的钱接盘=破灭时连锁清算",
+   "detail": "A股融资融券余额 2.17万亿，20日-10.5%；借来的钱接盘=破灭时连锁清算",
    "series": [
-    2.652,
     2.649,
     2.646,
     2.632,
@@ -182,10 +171,11 @@
     2.247,
     2.238,
     2.222,
-    2.18
+    2.18,
+    2.171
    ],
    "unit": "万亿",
-   "asof": "2026-11-20",
+   "asof": "2026-11-23",
    "auto": true
   },
   "rev2d": {
@@ -256,6 +246,7 @@
   "FRED 失业率: The read operation timed out",
   "FRED MMF: The read operation timed out",
   "FRED HY利差: The read operation timed out",
+  "multpl CAPE: <urlopen error [Errno 111] Connection refused>",
   "FRED 巴菲特指标: The read operation timed out",
   "Yahoo NVDA: HTTP Error 429: Too Many Requests",
   "Yahoo MSFT: HTTP Error 429: Too Many Requests",
